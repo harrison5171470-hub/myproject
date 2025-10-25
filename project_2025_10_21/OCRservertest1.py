@@ -157,7 +157,7 @@ def main():
     cv2.imwrite(image_output_path, img_cv)
     print(f"OCR 圖片已儲存到：{image_output_path}")
     
-    output_dir2 = "E:/projects/myproject/project_2025_10_21/test_output_text"
+    output_dir2 = "E:/projects/myproject/project_2025_10_21/test_output_texts"
     os.makedirs(output_dir2, exist_ok=True)
     text_output_path = os.path.join(output_dir2, output_text_name)
     with open(text_output_path, "w", encoding="utf-8") as f:
