@@ -10,6 +10,9 @@
 # ========================================
 
 # (1) --- 套件導入 ---
+
+# OCRtest\Scripts\activate
+
 import pytesseract  # Python 的 Tesseract OCR 接口
 from PIL import Image, ImageEnhance, ImageFilter  # 影像處理套件 Pillow
 import re          # 正則表達式，用於擷取金額
