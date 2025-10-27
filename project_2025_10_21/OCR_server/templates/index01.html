@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>OCR 上傳與辨識</title>
+  <style>
+    body { font-family: "Segoe UI", sans-serif; background:#f9fafb; text-align:center; padding:40px; }
+    .box { border:2px dashed #aaa; padding:30px; background:white; max-width:500px; margin:auto; border-radius:12px; }
+    button { margin:10px; padding:10px 20px; border:none; background-color:#0078D7; color:white; border-radius:6px; cursor:pointer; }
+    button:hover { background-color:#005fa3; }
+    #previewArea img { max-width:80%; margin-top:20px; border:1px solid #ddd; border-radius:8px; }
+    #result { margin-top:20px; white-space:pre-wrap; text-align:left; background:#f3f4f6; padding:15px; border-radius:8px; }
+  </style>
+</head>
+<body>
+
+<h2>OCR 圖片上傳與辨識</h2>
+<div class="box">
+  <input type="file" id="fileInput" accept="image/*"><br>
+  <button onclick="uploadFile()">上傳圖片</button>
+  <button onclick="processOCR()">開始辨識</button>
+</div>
+
+<div id="previewArea"></div>
+<div id="result"></div>
+<div id="downloadArea"></div>
+
+<script>
+let uploadedFilename = null;
+let ocrBoxes = [];
+
+async function uploadFile() {
+  const fileInput = document.getElementById('fileInput');
+  const file = fileInput.files[0];
+  if (!file) { alert("請先選擇圖片"); return; }
+
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const response = await fetch("/upload", { method:"POST", body:formData });
+  const data = await response.json();
+
+  if (data.success) {
+    uploadedFilename = file.name; // 後端儲存名稱
+    document.getElementById("previewArea").innerHTML = `
+      <h3>已上傳圖片預覽：</h3>
+      <img src="/uploaded/${uploadedFilename}" alt="Uploaded Image">
+    `;
+  } else {
+    alert("上傳失敗：" + (data.error || ""));
+  }
+}
+
+async function processOCR() {
+  if (!uploadedFilename) { alert("請先上傳圖片！"); return; }
+
+  const response = await fetch(`/process/${uploadedFilename}`);
+  const data = await response.json();
+
+  if (data.success) {
+    ocrBoxes = data.ocr_boxes; // 保留給原本程式使用
+    const textContent = ocrBoxes.map(b => b.text).join("\n");
+
+    document.getElementById("result").innerHTML = `<h3>OCR 辨識文字：</h3>${textContent}`;
+
+    // 產生文字檔下載連結
+    const blob = new Blob([textContent], {type:"text/plain;charset=utf-8"});
+    const txtFilename = uploadedFilename.replace(/\.[^/.]+$/, "") + "_OCR.txt";
+    const txtUrl = URL.createObjectURL(blob);
+
+    document.getElementById("downloadArea").innerHTML = `
+      <h3>下載 OCR 結果文字檔：</h3>
+      <a href="${txtUrl}" download="${txtFilename}">下載文字檔 (${txtFilename})</a>
+    `;
+  } else {
+    alert("OCR 辨識失敗：" + (data.error || ""));
+  }
+}
+</script>
+
+</body>
+</html>

@@ -1,6 +1,6 @@
+# OCRservertest1.py
 # 環境啟動 OCRtest\Scripts\activate
 # pip3 install requests pillow opencv-python
-#
 
 import os
 import sys
