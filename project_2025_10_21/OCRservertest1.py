@@ -1,4 +1,4 @@
-#
+# 環境啟動 OCRtest\Scripts\activate
 # pip3 install requests pillow opencv-python
 #
 
@@ -11,7 +11,8 @@ import cv2
 
 
 
-url = "http://192.168.0.168:8000/upload"  # Replace with your IP address
+
+url = "http://192.168.3.220:8000/upload"  # Replace with your IP address
 
 
 #print("cwd:", os.getcwd())
@@ -51,6 +52,8 @@ def pick_font(box_h_px: float):
     return ImageFont.load_default()
 
 # ===== Draw box and small text =====
+# 定義 draw_boxes() 函數，用 PIL 畫框與文字標籤。
+# 讓你在圖片上清楚看到哪裡被辨識出來。
 def draw_boxes(img_pil: Image.Image, boxes, line_thickness: int = 5) -> Image.Image:
     draw = ImageDraw.Draw(img_pil)
     for b in boxes:
@@ -81,7 +84,7 @@ def draw_boxes(img_pil: Image.Image, boxes, line_thickness: int = 5) -> Image.Im
         draw.rectangle([tx - pad, ty - pad, tx + tw + pad, ty + th + pad], fill=(255, 255, 255))
         draw.text((tx, ty), text, font=font, fill=(20, 20, 20))
     return img_pil
-
+# ===== Main function =====
 def main():
     if not os.path.exists(file_path):
         print(f"[ERROR] Image not found: {file_path}", file=sys.stderr)
@@ -116,6 +119,7 @@ def main():
         sys.exit(5)
 
     print("response ok")
+    print("Server returned JSON:", data)
 
     # 3) Load original image (using PIL)
     img_pil = Image.open(file_path).convert("RGB")
@@ -125,7 +129,7 @@ def main():
     H = int(data.get("image_height", img_pil.height))
     if (W, H) != (img_pil.width, img_pil.height):
         img_pil = img_pil.resize((W, H), Image.BICUBIC)
-
+ 
     boxes = data.get("ocr_boxes", [])
     img_pil = draw_boxes(img_pil, boxes)
     

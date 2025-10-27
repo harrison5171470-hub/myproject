@@ -19,28 +19,32 @@ import re          # 正則表達式，用於擷取金額
 import os          # 系統路徑操作
 
 # (2) --- 指定 tesseract.exe 執行檔路徑 ---
-# ⚠️ 請確認你的安裝目錄一致
+#  請確認你的安裝目錄一致
 pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
 # (3) --- 取得當前程式執行所在目錄 ---
 # 若在 VSCode / Jupyter 執行，__file__ 可能不存在
 if '__file__' in globals():
-    script_dir = os.path.dirname(__file__)
+    # 自動取得目前 Python 檔的資料夾
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    print("script_dir:", script_dir)
 else:
     script_dir = os.getcwd()  # 互動式環境使用當前工作目錄
 
 # (4) --- 設定圖片路徑 ---
-img_path = os.path.join(script_dir, "invoice001.png")
+#file_path = r"E:\projects\myproject\project_2025_10_21\test_input_images\invoice001.png"
+file_path = os.path.join(script_dir, "test_input_images", "invoice001.png")
+print("file_path:", file_path, "exists:", os.path.exists(file_path))
 
 # (5) --- 確認圖片是否存在 ---
-print("DEBUG - img_path:", img_path)
-print("DEBUG - exists:", os.path.exists(img_path))
+print("DEBUG - img_path:", file_path)
+print("DEBUG - exists:", os.path.exists(file_path))
 
-if not os.path.exists(img_path):
-    raise FileNotFoundError(f"找不到圖片: {img_path}")
+if not os.path.exists(file_path):
+    raise FileNotFoundError(f"找不到圖片: {file_path}")
 
 # (6) --- 開啟圖片 ---
-img = Image.open(img_path)
+img = Image.open(file_path)
 
 # (7) --- 圖片預處理 ---
 # 目的：幫助 OCR 辨識更清楚的文字
