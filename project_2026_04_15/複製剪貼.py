@@ -5,8 +5,12 @@ import tkinter as tk
 import pyperclip
 from datetime import datetime
 
-# 設定資料檔案路徑（與腳本同目錄）
-APP_DIR = os.path.dirname(os.path.abspath(__file__))
+# 設定資料檔案路徑：exe 時用 exe 所在目錄，直接跑 .py 時用腳本目錄
+import sys
+if getattr(sys, 'frozen', False):
+    APP_DIR = os.path.dirname(sys.executable)
+else:
+    APP_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_FILE = os.path.join(APP_DIR, "clipboard_history.json")
 
 # 最多保留的歷史筆數
