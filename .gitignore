@@ -39,3 +39,12 @@ project_2025_10_21/test_output_texts/
 project_2025_10_21/test_output_text/
 
 project_2025_10_21/OCR_server/uploaded/
+
+# 剪貼簿管理程式
+project_2026_04_15/clipboard_history.json
+project_2026_04_15/clipboard_history.json.bak
+project_2026_04_15/clipboard_history.json.tmp
+project_2026_04_15/build/
+project_2026_04_15/dist/
+project_2026_04_15/複製剪貼.spec
+project_2026_04_15/問AI的紀錄.txt
